@@ -1,28 +1,9 @@
 {-# LANGUAGE FlexibleInstances #-}
-module Graphics.Rendering.WebGL.Types (
-    JSRef,
-    
-    GLenum, GLboolean, GLbitfield, 
-    GLbyte, GLshort, GLint, GLsizei,
-    GLintptr, GLsizeiptr, 
-    GLubyte, GLushort, GLuint, 
-    GLfloat, GLclampf,
-    
-    Image', Image,
-    XmlHttpRequest', XmlHttpRequest,
-    
-    WebGLContext', WebGLContext,
-    WebGLBuffer', WebGLBuffer,
-    WebGLTexture', WebGLTexture,
-    WebGLContextAttributes', WebGLContextAttributes,
-    WebGLShader', WebGLShader,
-    WebGLProgram', WebGLProgram,
-    WebGLUniformLocation', WebGLUniformLocation,
-    WebGLUniformValue', WebGLUniformValue
-    ) where
+module Graphics.Rendering.WebGL.Types where
 
 import GHCJS.Types
 
+import Control.Monad.IO.Class
 import Foreign.C.Types
 import Data.Int
 import Data.Word
@@ -71,12 +52,28 @@ instance GObjectClass (JSRef XmlHttpRequest') where
 
 
 
+class (MonadIO m, Monad m) => MonadGL m where
+    getContext :: m WebGLContext
+
+type ExtensionName = JSString
+
+data WebGLShaderPrecisionFormat'
+type WebGLShaderPrecisionFormat = JSRef WebGLShaderPrecisionFormat'
+
+data WebGLActiveInfo'
+type WebGLActiveInfo = JSRef WebGLActiveInfo'
+
+
+
+data WebGLExtension'
+type WebGLExtension = JSRef WebGLExtension'
+
+data WebGLContext'
+type WebGLContext = JSRef WebGLContext'
 
 data WebGLContextAttributes'
 type WebGLContextAttributes = JSRef WebGLContextAttributes'
 
-data WebGLContext'
-type WebGLContext = JSRef WebGLContext'
 
 data WebGLShader'
 type WebGLShader = JSRef WebGLShader'
@@ -84,15 +81,26 @@ type WebGLShader = JSRef WebGLShader'
 data WebGLProgram'
 type WebGLProgram = JSRef WebGLProgram'
 
-data WebGLBuffer'
-type WebGLBuffer = JSRef WebGLBuffer'
-
-data WebGLTexture'
-type WebGLTexture = JSRef WebGLTexture'
-
 data WebGLUniformLocation'
 type WebGLUniformLocation = JSRef WebGLUniformLocation'
 
 data WebGLUniformValue'
 type WebGLUniformValue = JSRef WebGLUniformValue'
+
+
+data WebGLBuffer'
+type WebGLBuffer = JSRef WebGLBuffer'
+
+data WebGLRenderBuffer'
+type WebGLRenderBuffer = JSRef WebGLRenderBuffer'
+
+data WebGLFrameBuffer'
+type WebGLFrameBuffer = JSRef WebGLFrameBuffer'
+
+
+data WebGLTexture'
+type WebGLTexture = JSRef WebGLTexture'
+
+
+
 
