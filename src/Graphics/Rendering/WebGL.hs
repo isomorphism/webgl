@@ -7,6 +7,9 @@ module Graphics.Rendering.WebGL (
     module Graphics.Rendering.WebGL.Types
     ) where
 
+import Data.Word
+import Data.Int
+
 import GHCJS.Types
 import GHCJS.Foreign
 import GHCJS.DOM.Types
@@ -26,22 +29,115 @@ import Graphics.Rendering.WebGL.Raw
 
 import GHCJS.DOM.HTMLCanvasElement
 
-setClearColor :: WebGLContext -> Vec 4 Imm Float -> IO ()
-setClearColor cxt (Vec v) = js_clearColor cxt v
+setClearColor :: (MonadGL m) => Tint -> m ()
+setClearColor (Tint (Vec v)) = do
+    cxt <- getContext
+    liftIO $ js_clearColor cxt v
 
-uniform3fv :: WebGLContext -> WebGLUniformLocation -> Vec 3 t Float -> IO ()
-uniform3fv cxt ufm (Vec v) = js_uniform3fv cxt ufm v
-
-uniformMatrix3fv :: WebGLContext -> WebGLUniformLocation -> Bool -> Mat 3 t Float -> IO ()
-uniformMatrix3fv cxt ufm b (Mat v) = js_uniformMatrix3fv cxt ufm b v
-
-uniformMatrix4fv :: WebGLContext -> WebGLUniformLocation -> Bool -> Mat 4 t Float -> IO ()
-uniformMatrix4fv cxt ufm b (Mat v) = js_uniformMatrix4fv cxt ufm b v
-
-getAttribLocation :: WebGLContext -> WebGLProgram -> JSString -> IO (Maybe GLuint)
-getAttribLocation cxt prog n = do
-    loc <- js_getAttribLocation cxt prog n
+getAttribLocation :: (MonadGL m) => WebGLProgram -> JSString -> m (Maybe GLuint)
+getAttribLocation prog n = do
+    cxt <- getContext
+    loc <- liftIO $ js_getAttribLocation cxt prog n
     return $ if loc < 0 then Nothing else Just (fromIntegral loc)
+
+
+
+uniform1i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> m ()
+uniform1i ufm x1 = do
+    cxt <- getContext
+    liftIO $ js_uniform1i cxt ufm x1
+
+uniform1f :: (MonadGL m) => WebGLUniformLocation -> Float -> m ()
+uniform1f ufm x1 = do
+    cxt <- getContext
+    liftIO $ js_uniform1f cxt ufm x1
+
+uniform2i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> Int32 -> m ()
+uniform2i ufm x1 x2 = do
+    cxt <- getContext
+    liftIO $ js_uniform2i cxt ufm x1 x2
+
+uniform2f :: (MonadGL m) => WebGLUniformLocation -> Float -> Float -> m ()
+uniform2f ufm x1 x2 = do
+    cxt <- getContext
+    liftIO $ js_uniform2f cxt ufm x1 x2
+
+uniform3i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> Int32 -> Int32 -> m ()
+uniform3i ufm x1 x2 x3 = do
+    cxt <- getContext
+    liftIO $ js_uniform3i cxt ufm x1 x2 x3
+
+uniform3f :: (MonadGL m) => WebGLUniformLocation -> Float -> Float -> Float -> m ()
+uniform3f ufm x1 x2 x3 = do
+    cxt <- getContext
+    liftIO $ js_uniform3f cxt ufm x1 x2 x3
+
+uniform4i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> Int32 -> Int32 -> Int32 -> m ()
+uniform4i ufm x1 x2 x3 x4 = do
+    cxt <- getContext
+    liftIO $ js_uniform4i cxt ufm x1 x2 x3 x4
+
+uniform4f :: (MonadGL m) => WebGLUniformLocation -> Float -> Float -> Float -> Float -> m ()
+uniform4f ufm x1 x2 x3 x4 = do
+    cxt <- getContext
+    liftIO $ js_uniform4f cxt ufm x1 x2 x3 x4
+
+uniform1iv :: (MonadGL m) => WebGLUniformLocation -> Vec 1 t Int32 -> m ()
+uniform1iv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform1iv cxt ufm v
+
+uniform1fv :: (MonadGL m) => WebGLUniformLocation -> Vec 1 t Float -> m ()
+uniform1fv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform1fv cxt ufm v
+
+uniform2iv :: (MonadGL m) => WebGLUniformLocation -> Vec 2 t Int32 -> m ()
+uniform2iv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform2iv cxt ufm v
+
+uniform2fv :: (MonadGL m) => WebGLUniformLocation -> Vec 2 t Float -> m ()
+uniform2fv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform2fv cxt ufm v
+
+uniform3iv :: (MonadGL m) => WebGLUniformLocation -> Vec 3 t Int32 -> m ()
+uniform3iv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform3iv cxt ufm v
+
+uniform3fv :: (MonadGL m) => WebGLUniformLocation -> Vec 3 t Float -> m ()
+uniform3fv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform3fv cxt ufm v
+
+uniform4iv :: (MonadGL m) => WebGLUniformLocation -> Vec 4 t Int32 -> m ()
+uniform4iv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform4iv cxt ufm v
+
+uniform4fv :: (MonadGL m) => WebGLUniformLocation -> Vec 4 t Float -> m ()
+uniform4fv ufm (Vec v) = do
+    cxt <- getContext
+    liftIO $ js_uniform4fv cxt ufm v
+
+
+uniformMatrix2fv :: (MonadGL m) => WebGLUniformLocation -> Bool -> Mat 2 t Float -> m ()
+uniformMatrix2fv ufm b (Mat v) = do
+    cxt <- getContext
+    liftIO $ js_uniformMatrix2fv cxt ufm b v
+
+uniformMatrix3fv :: (MonadGL m) => WebGLUniformLocation -> Bool -> Mat 3 t Float -> m ()
+uniformMatrix3fv ufm b (Mat v) = do
+    cxt <- getContext
+    liftIO $ js_uniformMatrix3fv cxt ufm b v
+
+uniformMatrix4fv :: (MonadGL m) => WebGLUniformLocation -> Bool -> Mat 4 t Float -> m ()
+uniformMatrix4fv ufm b (Mat v) = do
+    cxt <- getContext
+    liftIO $ js_uniformMatrix4fv cxt ufm b v
+
 
 
 
@@ -215,44 +311,6 @@ copyTexImage2D :: WebGLContext -> TextureTarget -> (GLint level, GLenum internal
                        GLenum format, GLenum type, HTMLCanvasElement canvas); // May throw DOMException
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, HTMLVideoElement video); // May throw DOMException
-
-    void uniform1f(WebGLUniformLocation? location, GLfloat x);
-    void uniform1fv(WebGLUniformLocation? location, Float32Array v);
-    void uniform1fv(WebGLUniformLocation? location, sequence<GLfloat> v);
-    void uniform1i(WebGLUniformLocation? location, GLint x);
-    void uniform1iv(WebGLUniformLocation? location, Int32Array v);
-    void uniform1iv(WebGLUniformLocation? location, sequence<long> v);
-    void uniform2f(WebGLUniformLocation? location, GLfloat x, GLfloat y);
-    void uniform2fv(WebGLUniformLocation? location, Float32Array v);
-    void uniform2fv(WebGLUniformLocation? location, sequence<GLfloat> v);
-    void uniform2i(WebGLUniformLocation? location, GLint x, GLint y);
-    void uniform2iv(WebGLUniformLocation? location, Int32Array v);
-    void uniform2iv(WebGLUniformLocation? location, sequence<long> v);
-    void uniform3f(WebGLUniformLocation? location, GLfloat x, GLfloat y, GLfloat z);
-    void uniform3fv(WebGLUniformLocation? location, Float32Array v);
-    void uniform3fv(WebGLUniformLocation? location, sequence<GLfloat> v);
-    void uniform3i(WebGLUniformLocation? location, GLint x, GLint y, GLint z);
-    void uniform3iv(WebGLUniformLocation? location, Int32Array v);
-    void uniform3iv(WebGLUniformLocation? location, sequence<long> v);
-    void uniform4f(WebGLUniformLocation? location, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-    void uniform4fv(WebGLUniformLocation? location, Float32Array v);
-    void uniform4fv(WebGLUniformLocation? location, sequence<GLfloat> v);
-    void uniform4i(WebGLUniformLocation? location, GLint x, GLint y, GLint z, GLint w);
-    void uniform4iv(WebGLUniformLocation? location, Int32Array v);
-    void uniform4iv(WebGLUniformLocation? location, sequence<long> v);
-
-    void uniformMatrix2fv(WebGLUniformLocation? location, GLboolean transpose, 
-                          Float32Array value);
-    void uniformMatrix2fv(WebGLUniformLocation? location, GLboolean transpose, 
-                          sequence<GLfloat> value);
-    void uniformMatrix3fv(WebGLUniformLocation? location, GLboolean transpose, 
-                          Float32Array value);
-    void uniformMatrix3fv(WebGLUniformLocation? location, GLboolean transpose, 
-                          sequence<GLfloat> value);
-    void uniformMatrix4fv(WebGLUniformLocation? location, GLboolean transpose, 
-                          Float32Array value);
-    void uniformMatrix4fv(WebGLUniformLocation? location, GLboolean transpose, 
-                          sequence<GLfloat> value);
 
     void useProgram(WebGLProgram? program);
     void validateProgram(WebGLProgram? program);

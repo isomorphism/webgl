@@ -1,3 +1,4 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 module Graphics.Rendering.WebGL.Types where
 
@@ -8,6 +9,18 @@ import Foreign.C.Types
 import Data.Int
 import Data.Word
 import GHCJS.DOM.Types
+import GHCJS.TypedArray
+import Graphics.Rendering.WebGL.Matrix
+
+
+newtype Color = Color { getColor :: Vec 3 Imm Float } -- 3 elements (rgb), 0.0 - 1.0 range
+
+newtype Tint = Tint { getTint :: Vec 4 Imm Float } -- 4 elements (rgba), 0.0 - 1.0 range
+
+class (MonadIO m, Monad m) => MonadGL m where
+    getContext :: m WebGLContext
+
+
 
 -- translating from Web IDL specification:
 -- byte = 8 bits
@@ -51,9 +64,6 @@ instance GObjectClass (JSRef XmlHttpRequest') where
     unsafeCastGObject (GObject o) = castRef o
 
 
-
-class (MonadIO m, Monad m) => MonadGL m where
-    getContext :: m WebGLContext
 
 type ExtensionName = JSString
 

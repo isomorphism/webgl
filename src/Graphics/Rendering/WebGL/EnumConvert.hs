@@ -1,5 +1,7 @@
 module Graphics.Rendering.WebGL.EnumConvert where
 
+import Data.Bits
+import Data.Monoid
 import Graphics.Rendering.WebGL.Types
 import Graphics.Rendering.WebGL.Constants
 
@@ -98,10 +100,25 @@ instance GLEnum BufferUsage where
         | otherwise            = Nothing
 
 
-data ClearBufferMask -- TODO
--- abstract type, Monoid of bitwise OR (?)
-instance GLEnum ClearBufferMask -- TODO
+newtype ClearBufferMask = CBM { getCBM :: GLenum }
+instance Monoid ClearBufferMask where
+    mempty = CBM 0
+    mappend (CBM x) (CBM y) = CBM $ x .|. y
 
+depthBufferMask = CBM gl_DEPTH_BUFFER_BIT
+
+stencilBufferMask = CBM gl_STENCIL_BUFFER_BIT
+
+colorBufferMask = CBM gl_COLOR_BUFFER_BIT
+
+allBufferMask = depthBufferMask <> stencilBufferMask <> colorBufferMask
+
+instance GLEnum ClearBufferMask where
+    toGLEnum (CBM x) = x
+    fromGLEnum e 
+        | e' == 0   = Just $ CBM e
+        | otherwise = Nothing
+      where e' = e .&. complement (getCBM allBufferMask)
 
 
 
