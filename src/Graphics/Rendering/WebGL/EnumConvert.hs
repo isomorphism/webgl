@@ -102,7 +102,7 @@ instance GLEnum BufferUsage where
         | otherwise            = Nothing
 
 
-newtype ClearBufferMask = CBM { getCBM :: GLenum }
+newtype ClearBufferMask = CBM { getCBM :: GLbitfield }
 instance Monoid ClearBufferMask where
     mempty = CBM 0
     mappend (CBM x) (CBM y) = CBM $ x .|. y
@@ -195,6 +195,17 @@ instance GLEnum CullFaceMode where
         | e == gl_BACK            = Just CullBack
         | e == gl_FRONT_AND_BACK  = Just CullBoth
         | otherwise               = Nothing
+
+data FrontFaceDir = FrontCW | FrontCCW
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum FrontFaceDir where
+    toGLEnum FrontCW = gl_CW
+    toGLEnum FrontCCW = gl_CCW
+    fromGLEnum e
+        | e == gl_CW  = Just FrontCW
+        | e == gl_CCW = Just FrontCCW
+        | otherwise   = Nothing
 
 data IndexElementType = ByteIndices | ShortIndices
     deriving (Eq, Ord, Read, Show)
@@ -297,6 +308,46 @@ instance GLEnum TexMinFilter where
         | e == gl_LINEAR_MIPMAP_NEAREST  = Just (TexMinFilter Linear (Just Nearest))
         | e == gl_LINEAR_MIPMAP_LINEAR   = Just (TexMinFilter Linear (Just Linear))
         | otherwise                      = Nothing
+
+
+data Capability = Blend | CullFace | DepthTest | Dither | PolygonOffsetFill
+                | SampleAlphaToCoverage | SampleCoverage | ScissorTest | StencilTest
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum Capability where
+    toGLEnum Blend = gl_BLEND
+    toGLEnum CullFace = gl_CULL_FACE
+    toGLEnum DepthTest = gl_DEPTH_TEST
+    toGLEnum Dither = gl_DITHER
+    toGLEnum PolygonOffsetFill = gl_POLYGON_OFFSET_FILL
+    toGLEnum SampleAlphaToCoverage = gl_SAMPLE_ALPHA_TO_COVERAGE
+    toGLEnum SampleCoverage = gl_SAMPLE_COVERAGE
+    toGLEnum ScissorTest = gl_SCISSOR_TEST
+    toGLEnum StencilTest = gl_STENCIL_TEST
+    fromGLEnum e
+        | e == gl_BLEND                    = Just Blend
+        | e == gl_CULL_FACE                = Just CullFace
+        | e == gl_DEPTH_TEST               = Just DepthTest
+        | e == gl_DITHER                   = Just Dither
+        | e == gl_POLYGON_OFFSET_FILL      = Just PolygonOffsetFill
+        | e == gl_SAMPLE_ALPHA_TO_COVERAGE = Just SampleAlphaToCoverage
+        | e == gl_SAMPLE_COVERAGE          = Just SampleCoverage
+        | e == gl_SCISSOR_TEST             = Just ScissorTest
+        | e == gl_STENCIL_TEST             = Just StencilTest
+        | otherwise                        = Nothing
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

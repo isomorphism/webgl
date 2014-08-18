@@ -37,6 +37,22 @@ import GHCJS.DOM.HTMLCanvasElement
 cullFace :: (MonadGL m) => CullFaceMode -> m ()
 cullFace mode = liftGL $ js_cullFace (toGLEnum mode)
 
+disable :: (MonadGL m) => Capability -> m ()
+disable cap = liftGL $ js_disable (toGLEnum cap)
+
+enable :: (MonadGL m) => Capability -> m ()
+enable cap = liftGL $ js_enable (toGLEnum cap)
+
+frontFace :: (MonadGL m) => FrontFaceDir -> m ()
+frontFace dir = liftGL $ js_frontFace (toGLEnum dir)
+
+setClearColor :: (MonadGL m) => Tint -> m ()
+setClearColor (Tint (Vec v)) = liftGL $ js_clearColor v
+
+setViewport :: (MonadGL m) => Int32 -> Int32 -> Int32 -> Int32 -> m ()
+setViewport = liftGL4 js_setViewport
+
+
 
 
 bindBuffer :: (MonadGL m) => BufferTarget -> WebGLBuffer -> m ()
@@ -48,12 +64,59 @@ bufferData t buf use = liftGL $ js_bufferData (toGLEnum t) buf (toGLEnum use)
 createBuffer :: (MonadGL m) => m WebGLBuffer
 createBuffer = liftGL js_createBuffer
 
-drawElements :: (MonadGL m) => DrawMode -> Int32 -> IndexElementType -> Int -> m ()
-drawElements mode cnt ixtype offset = liftGL $ js_drawElements (toGLEnum mode) cnt (toGLEnum ixtype) offset
+enableVertexAttribArray :: (MonadGL m) => Word32 -> m ()
+enableVertexAttribArray = liftGL1 js_enableVertexAttribArray
 
 vertexAttribPointer :: (MonadGL m) => Word32 -> Int32 -> GLDataType -> Bool -> Int32 -> Int -> m ()
 vertexAttribPointer ix sz ty normd stride offs = liftGL $ js_vertexAttribPointer ix sz (toGLEnum ty) normd stride offs
 
+
+
+
+clear :: (MonadGL m) => ClearBufferMask -> m ()
+clear mask = liftGL $ js_clear (toGLEnum mask)
+
+drawElements :: (MonadGL m) => DrawMode -> Int32 -> IndexElementType -> Int -> m ()
+drawElements mode cnt ixtype offset = liftGL $ js_drawElements (toGLEnum mode) cnt (toGLEnum ixtype) offset
+
+
+attachShader :: (MonadGL m) => WebGLProgram -> WebGLShader a -> m ()
+attachShader = liftGL2 js_attachShader
+
+compileShader :: (MonadGL m) => WebGLShader a -> m ()
+compileShader = liftGL1 js_compileShader
+
+createProgram :: (MonadGL m) => m WebGLProgram
+createProgram = liftGL js_createProgram
+
+createFragmentShader :: (MonadGL m) => m FragmentShader
+createFragmentShader = liftGL $ js_createShader gl_FRAGMENT_SHADER
+
+createVertexShader :: (MonadGL m) => m VertexShader
+createVertexShader = liftGL $ js_createShader gl_VERTEX_SHADER
+
+linkProgram :: (MonadGL m) => WebGLProgram -> m ()
+linkProgram = liftGL1 js_linkProgram
+
+shaderSource :: (MonadGL m) => WebGLShader a -> JSString -> m ()
+shaderSource = liftGL2 js_shaderSource
+
+useProgram :: (MonadGL m) => WebGLProgram -> m ()
+useProgram = liftGL1 js_useProgram
+
+makeFragmentShader src = do
+    shd <- createFragmentShader
+    shaderSource shd src
+    compileShader shd
+    -- TODO: error checks
+    return shd
+
+makeVertexShader src = do
+    shd <- createVertexShader
+    shaderSource shd src
+    compileShader shd
+    -- TODO: error checks
+    return shd
 
 
 
@@ -90,17 +153,18 @@ texMagFilter :: (MonadGL m) => TextureType -> TexMagFilter -> m ()
 texMagFilter ty mode = liftGL $ js_texParameteri (toGLEnum ty) gl_TEXTURE_MAG_FILTER (toGLEnum mode)
 
 
-setClearColor :: (MonadGL m) => Tint -> m ()
-setClearColor (Tint (Vec v)) = liftGL $ js_clearColor v
+
 
 getAttribLocation :: (MonadGL m) => WebGLProgram -> JSString -> m (Maybe GLuint)
 getAttribLocation prog n = do
     loc <- liftGL $ js_getAttribLocation prog n
     return $ if loc < 0 then Nothing else Just (fromIntegral loc)
 
+getUniformLocation :: (MonadGL m) => WebGLProgram -> JSString -> m WebGLUniformLocation
+getUniformLocation = liftGL2 js_getUniformLocation 
+
 uniform1i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> m ()
 uniform1i = liftGL2 js_uniform1i
-
 
 uniform1f :: (MonadGL m) => WebGLUniformLocation -> Float -> m ()
 uniform1f = liftGL2 js_uniform1f

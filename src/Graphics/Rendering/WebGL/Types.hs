@@ -84,9 +84,14 @@ type WebGLContext = JSRef WebGLContext'
 data WebGLContextAttributes'
 type WebGLContextAttributes = JSRef WebGLContextAttributes'
 
+data FragmentShader'
+data VertexShader'
 
-data WebGLShader'
-type WebGLShader = JSRef WebGLShader'
+data WebGLShader' a
+type WebGLShader a = JSRef (WebGLShader' a)
+
+type FragmentShader = WebGLShader FragmentShader'
+type VertexShader = WebGLShader VertexShader'
 
 data WebGLProgram'
 type WebGLProgram = JSRef WebGLProgram'

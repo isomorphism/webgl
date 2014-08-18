@@ -33,7 +33,7 @@ foreign import javascript unsafe "$2['activeTexture']($1);"
 
 -- |  void attachShader(WebGLProgram? program, WebGLShader? shader);
 foreign import javascript unsafe "$3['attachShader']($1, $2);"
-    js_attachShader :: WebGLProgram -> WebGLShader -> WebGLContext -> IO ()
+    js_attachShader :: WebGLProgram -> WebGLShader a -> WebGLContext -> IO ()
 
 -- | void bindAttribLocation(WebGLProgram? program, GLuint index, DOMString name);
 foreign import javascript unsafe "$4['bindAttribLocation']($1, $2, $3);"
@@ -119,7 +119,7 @@ foreign import javascript unsafe "$5['colorMask']($1, $2, $3, $4);"
 
 -- | void compileShader(WebGLShader? shader);
 foreign import javascript unsafe "$2['compileShader']($1);"
-    js_compileShader :: WebGLShader -> WebGLContext -> IO ()
+    js_compileShader :: WebGLShader a -> WebGLContext -> IO ()
 
 {- default WebGL doesn't support compressed textures I think, so skipping these for now
 
@@ -158,7 +158,7 @@ foreign import javascript unsafe "$1['createRenderBuffer']()"
 
 -- | WebGLShader? createShader(GLenum type);
 foreign import javascript unsafe "$2['createShader']($1)"
-    js_createShader :: GLenum -> WebGLContext -> IO WebGLShader
+    js_createShader :: GLenum -> WebGLContext -> IO (WebGLShader a)
 
 -- | WebGLTexture? createTexture();
 foreign import javascript unsafe "$1['createTexture']()"
@@ -186,7 +186,7 @@ foreign import javascript unsafe "$2['deleteRenderBuffer']($1)"
 
 -- | void deleteShader(WebGLShader? shader);
 foreign import javascript unsafe "$2['deleteShader']($1)"
-    js_deleteShader :: WebGLShader -> WebGLContext -> IO ()
+    js_deleteShader :: WebGLShader a -> WebGLContext -> IO ()
 
 -- | void deleteTexture(WebGLTexture? texture);
 foreign import javascript unsafe "$2['deleteTexture']($1)"
@@ -206,7 +206,7 @@ foreign import javascript unsafe "$3['depthRange']($1, $2)"
 
 -- | void detachShader(WebGLProgram? program, WebGLShader? shader);
 foreign import javascript unsafe "$2['detachShader']($1)"
-    js_detachShader :: WebGLProgram -> WebGLShader -> WebGLContext -> IO ()
+    js_detachShader :: WebGLProgram -> WebGLShader a -> WebGLContext -> IO ()
 
 -- | void disable(GLenum cap);
 foreign import javascript unsafe "$2['disable']($1);"
@@ -266,7 +266,7 @@ foreign import javascript unsafe "$3['getActiveUniform']($1, $2);"
 
 -- | sequence<WebGLShader>? getAttachedShaders(WebGLProgram? program);
 foreign import javascript unsafe "$2['getAttachedShaders']($1);"
-    js_getAttachedShaders :: WebGLProgram -> WebGLContext -> IO (JSArray WebGLShader)
+    js_getAttachedShaders :: WebGLProgram -> WebGLContext -> IO (JSArray (WebGLShader ()))
 
 -- | [WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram? program, DOMString name);
 foreign import javascript unsafe "$3['getAttribLocation']($1, $2)"
@@ -356,11 +356,11 @@ foreign import javascript unsafe "$2['getRenderbufferParameter']($1, $2['RENDERB
 
 -- | any getShaderParameter(WebGLShader? shader, GLenum pname);
 foreign import javascript unsafe "$2['getShaderParameter']($1, $2['SHADER_TYPE'])"
-    js_getShaderParameter_shaderType :: WebGLShader -> WebGLContext -> IO GLenum
+    js_getShaderParameter_shaderType :: WebGLShader a -> WebGLContext -> IO GLenum
 foreign import javascript unsafe "$2['getShaderParameter']($1, $2['DELETE_STATUS'])"
-    js_getShaderParameter_deleteStatus :: WebGLShader -> WebGLContext -> IO GLboolean
+    js_getShaderParameter_deleteStatus :: WebGLShader a -> WebGLContext -> IO GLboolean
 foreign import javascript unsafe "$2['getShaderParameter']($1, $2['COMPILE_STATUS'])"
-    js_getShaderParameter_compileStatus :: WebGLShader -> WebGLContext -> IO GLboolean
+    js_getShaderParameter_compileStatus :: WebGLShader a -> WebGLContext -> IO GLboolean
 
 -- | WebGLShaderPrecisionFormat? getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype);
 foreign import javascript unsafe "$3['getShaderPrecisionFormat']($1, $2)"
@@ -368,11 +368,11 @@ foreign import javascript unsafe "$3['getShaderPrecisionFormat']($1, $2)"
 
 -- | DOMString? getShaderInfoLog(WebGLShader? shader);
 foreign import javascript unsafe "$2['getShaderInfoLog']($1)"
-    js_getShaderInfoLog :: WebGLShader -> WebGLContext -> IO JSString
+    js_getShaderInfoLog :: WebGLShader a -> WebGLContext -> IO JSString
 
 -- | DOMString? getShaderSource(WebGLShader? shader);
 foreign import javascript unsafe "$2['getShaderSource']($1)"
-    js_getShaderSource :: WebGLShader -> WebGLContext -> IO JSString
+    js_getShaderSource :: WebGLShader a -> WebGLContext -> IO JSString
 
 -- | any getTexParameter(GLenum target, GLenum pname);
 foreign import javascript unsafe "$2['getTexParameter']($1, $2['TEXTURE_MAG_FILTER'])"
@@ -445,7 +445,7 @@ foreign import javascript unsafe "$3['scissor']($1, $2);"
 
 -- | void shaderSource(WebGLShader? shader, DOMString source);
 foreign import javascript unsafe "$3['shaderSource']($1, $2);"
-    js_shaderSource :: WebGLShader -> JSString -> WebGLContext -> IO ()
+    js_shaderSource :: WebGLShader a -> JSString -> WebGLContext -> IO ()
 
 -- | void stencilFunc(GLenum func, GLint ref, GLuint mask);
 -- | void stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask);
