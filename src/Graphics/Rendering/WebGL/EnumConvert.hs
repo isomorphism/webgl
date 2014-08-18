@@ -120,13 +120,66 @@ instance GLEnum ClearBufferMask where
         | otherwise = Nothing
       where e' = e .&. complement (getCBM allBufferMask)
 
+data PixelFormat = Alpha | RGB | RGBA | Luminance | LuminanceAlpha
+    deriving (Eq, Ord, Read, Show)
 
+instance GLEnum PixelFormat where
+    toGLEnum Alpha = gl_ALPHA
+    toGLEnum RGB = gl_RGB
+    toGLEnum RGBA = gl_RGBA
+    toGLEnum Luminance = gl_LUMINANCE
+    toGLEnum LuminanceAlpha = gl_LUMINANCE_ALPHA
+    fromGLEnum e
+        | e == gl_ALPHA           = Just Alpha
+        | e == gl_RGB             = Just RGB
+        | e == gl_RGBA            = Just RGBA
+        | e == gl_LUMINANCE       = Just Luminance
+        | e == gl_LUMINANCE_ALPHA = Just LuminanceAlpha
+        | otherwise               = Nothing
 
+data PixelTypeFormat = RGBA8888 | RGB888 | RGBA4444 | RGBA5551 | RGB565
+                     | LumA88 | Lum8 | A8
+  deriving (Eq, Ord, Read, Show)
 
+getFormatEnum RGBA8888 = gl_RGBA
+getFormatEnum RGB888   = gl_RGB
+getFormatEnum RGBA4444 = gl_RGBA
+getFormatEnum RGBA5551 = gl_RGBA
+getFormatEnum RGB565   = gl_RGB
+getFormatEnum LumA88   = gl_LUMINANCE_ALPHA
+getFormatEnum Lum8     = gl_LUMINANCE
+getFormatEnum A8       = gl_ALPHA
 
+getTypeEnum RGBA8888 = gl_UNSIGNED_BYTE
+getTypeEnum RGB888   = gl_UNSIGNED_BYTE
+getTypeEnum RGBA4444 = gl_UNSIGNED_SHORT_4_4_4_4
+getTypeEnum RGBA5551 = gl_UNSIGNED_SHORT_5_5_5_1
+getTypeEnum RGB565   = gl_UNSIGNED_SHORT_5_6_5
+getTypeEnum LumA88   = gl_UNSIGNED_BYTE
+getTypeEnum Lum8     = gl_UNSIGNED_BYTE
+getTypeEnum A8       = gl_UNSIGNED_BYTE
 
+data PixelStoreFlag = UnpackFlipY | UnpackPremultiplyAlpha | UnpackColorspaceConversion
+    deriving (Eq, Ord, Read, Show)
 
+instance GLEnum PixelStoreFlag where
+    toGLEnum UnpackFlipY = gl_UNPACK_FLIP_Y_WEBGL
+    toGLEnum UnpackPremultiplyAlpha = gl_UNPACK_PREMULTIPLY_ALPHA_WEBGL
+    toGLEnum UnpackColorspaceConversion = gl_UNPACK_COLORSPACE_CONVERSION_WEBGL
+    fromGLEnum e
+        | e == gl_UNPACK_FLIP_Y_WEBGL                = Just UnpackFlipY
+        | e == gl_UNPACK_PREMULTIPLY_ALPHA_WEBGL     = Just UnpackPremultiplyAlpha
+        | e == gl_UNPACK_COLORSPACE_CONVERSION_WEBGL = Just UnpackColorspaceConversion
+        | otherwise                                  = Nothing
 
+data PixelStoreParam = UnpackAlignment
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum PixelStoreParam where
+    toGLEnum UnpackAlignment = gl_UNPACK_ALIGNMENT
+    fromGLEnum e
+        | e == gl_UNPACK_ALIGNMENT = Just UnpackAlignment
+        | otherwise                = Nothing
 
 
 

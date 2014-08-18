@@ -4,7 +4,8 @@ module Graphics.Rendering.WebGL (
     module Graphics.Rendering.WebGL.Matrix,
     module Graphics.Rendering.WebGL,
     module Graphics.Rendering.WebGL.EnumConvert,
-    module Graphics.Rendering.WebGL.Types
+    module Graphics.Rendering.WebGL.Types,
+    module Graphics.Rendering.WebGL.Misc
     ) where
 
 import Data.Word
@@ -26,120 +27,105 @@ import Graphics.Rendering.WebGL.Matrix.Types
 import Graphics.Rendering.WebGL.Types
 import Graphics.Rendering.WebGL.EnumConvert
 import Graphics.Rendering.WebGL.Raw
+import Graphics.Rendering.WebGL.Misc
+import Graphics.Rendering.WebGL.Internal
 
 import GHCJS.DOM.HTMLCanvasElement
 
+bindBuffer :: (MonadGL m) => BufferTarget -> WebGLBuffer -> m ()
+bindBuffer t buf = liftGL $ js_bindBuffer (toGLEnum t) buf
+
+bufferData :: (MonadGL m) => BufferTarget -> TypedArray a -> BufferUsage -> m ()
+bufferData t buf use = liftGL $ js_bufferData (toGLEnum t) buf (toGLEnum use)
+
+
+
+
+bindTexture :: (MonadGL m) => TextureType -> WebGLTexture -> m ()
+bindTexture t tx = liftGL $ js_bindTexture (toGLEnum t) tx
+
+createTexture :: (MonadGL m) => m WebGLTexture
+createTexture = liftGL js_createTexture
+
+pixelStoreFlag :: (MonadGL m) => PixelStoreFlag -> Bool -> m ()
+pixelStoreFlag flg b = liftGL $ js_pixelStorei (toGLEnum flg) (if b then 1 else 0)
+
+pixelStoreParam :: (MonadGL m) => PixelStoreParam -> Int32 -> m ()
+pixelStoreParam param val = liftGL $ js_pixelStorei (toGLEnum param) val
+
+texImage2D :: (MonadGL m) => TextureTarget -> Int32 -> PixelTypeFormat -> Image -> m ()
+texImage2D targ lev tyfm tex = liftGL $ js_texImage2D (toGLEnum targ) lev 
+                                                      (getFormatEnum tyfm) 
+                                                      (getFormatEnum tyfm) 
+                                                      (getTypeEnum tyfm)
+                                                      tex
+
 setClearColor :: (MonadGL m) => Tint -> m ()
-setClearColor (Tint (Vec v)) = do
-    cxt <- getContext
-    liftIO $ js_clearColor cxt v
+setClearColor (Tint (Vec v)) = liftGL $ js_clearColor v
 
 getAttribLocation :: (MonadGL m) => WebGLProgram -> JSString -> m (Maybe GLuint)
 getAttribLocation prog n = do
-    cxt <- getContext
-    loc <- liftIO $ js_getAttribLocation cxt prog n
+    loc <- liftGL $ js_getAttribLocation prog n
     return $ if loc < 0 then Nothing else Just (fromIntegral loc)
 
-
-
 uniform1i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> m ()
-uniform1i ufm x1 = do
-    cxt <- getContext
-    liftIO $ js_uniform1i cxt ufm x1
+uniform1i = liftGL2 js_uniform1i
+
 
 uniform1f :: (MonadGL m) => WebGLUniformLocation -> Float -> m ()
-uniform1f ufm x1 = do
-    cxt <- getContext
-    liftIO $ js_uniform1f cxt ufm x1
+uniform1f = liftGL2 js_uniform1f
 
 uniform2i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> Int32 -> m ()
-uniform2i ufm x1 x2 = do
-    cxt <- getContext
-    liftIO $ js_uniform2i cxt ufm x1 x2
+uniform2i = liftGL3 js_uniform2i
 
 uniform2f :: (MonadGL m) => WebGLUniformLocation -> Float -> Float -> m ()
-uniform2f ufm x1 x2 = do
-    cxt <- getContext
-    liftIO $ js_uniform2f cxt ufm x1 x2
+uniform2f = liftGL3 js_uniform2f
 
 uniform3i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> Int32 -> Int32 -> m ()
-uniform3i ufm x1 x2 x3 = do
-    cxt <- getContext
-    liftIO $ js_uniform3i cxt ufm x1 x2 x3
+uniform3i = liftGL4 js_uniform3i
 
 uniform3f :: (MonadGL m) => WebGLUniformLocation -> Float -> Float -> Float -> m ()
-uniform3f ufm x1 x2 x3 = do
-    cxt <- getContext
-    liftIO $ js_uniform3f cxt ufm x1 x2 x3
+uniform3f = liftGL4 js_uniform3f
 
 uniform4i :: (MonadGL m) => WebGLUniformLocation -> Int32 -> Int32 -> Int32 -> Int32 -> m ()
-uniform4i ufm x1 x2 x3 x4 = do
-    cxt <- getContext
-    liftIO $ js_uniform4i cxt ufm x1 x2 x3 x4
+uniform4i = liftGL5 js_uniform4i
 
 uniform4f :: (MonadGL m) => WebGLUniformLocation -> Float -> Float -> Float -> Float -> m ()
-uniform4f ufm x1 x2 x3 x4 = do
-    cxt <- getContext
-    liftIO $ js_uniform4f cxt ufm x1 x2 x3 x4
+uniform4f = liftGL5 js_uniform4f
 
 uniform1iv :: (MonadGL m) => WebGLUniformLocation -> Vec 1 t Int32 -> m ()
-uniform1iv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform1iv cxt ufm v
+uniform1iv ufm (Vec v) = liftGL $ js_uniform1iv ufm v
 
 uniform1fv :: (MonadGL m) => WebGLUniformLocation -> Vec 1 t Float -> m ()
-uniform1fv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform1fv cxt ufm v
+uniform1fv ufm (Vec v) = liftGL $ js_uniform1fv ufm v
 
 uniform2iv :: (MonadGL m) => WebGLUniformLocation -> Vec 2 t Int32 -> m ()
-uniform2iv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform2iv cxt ufm v
+uniform2iv ufm (Vec v) = liftGL $ js_uniform2iv ufm v
 
 uniform2fv :: (MonadGL m) => WebGLUniformLocation -> Vec 2 t Float -> m ()
-uniform2fv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform2fv cxt ufm v
+uniform2fv ufm (Vec v) = liftGL $ js_uniform2fv ufm v
 
 uniform3iv :: (MonadGL m) => WebGLUniformLocation -> Vec 3 t Int32 -> m ()
-uniform3iv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform3iv cxt ufm v
+uniform3iv ufm (Vec v) = liftGL $ js_uniform3iv ufm v
 
 uniform3fv :: (MonadGL m) => WebGLUniformLocation -> Vec 3 t Float -> m ()
-uniform3fv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform3fv cxt ufm v
+uniform3fv ufm (Vec v) = liftGL $ js_uniform3fv ufm v
 
 uniform4iv :: (MonadGL m) => WebGLUniformLocation -> Vec 4 t Int32 -> m ()
-uniform4iv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform4iv cxt ufm v
+uniform4iv ufm (Vec v) = liftGL $ js_uniform4iv ufm v
 
 uniform4fv :: (MonadGL m) => WebGLUniformLocation -> Vec 4 t Float -> m ()
-uniform4fv ufm (Vec v) = do
-    cxt <- getContext
-    liftIO $ js_uniform4fv cxt ufm v
+uniform4fv ufm (Vec v) = liftGL $ js_uniform4fv ufm v
 
 
 uniformMatrix2fv :: (MonadGL m) => WebGLUniformLocation -> Bool -> Mat 2 t Float -> m ()
-uniformMatrix2fv ufm b (Mat v) = do
-    cxt <- getContext
-    liftIO $ js_uniformMatrix2fv cxt ufm b v
+uniformMatrix2fv ufm b (Mat v) = liftGL $ js_uniformMatrix2fv ufm b v
 
 uniformMatrix3fv :: (MonadGL m) => WebGLUniformLocation -> Bool -> Mat 3 t Float -> m ()
-uniformMatrix3fv ufm b (Mat v) = do
-    cxt <- getContext
-    liftIO $ js_uniformMatrix3fv cxt ufm b v
+uniformMatrix3fv ufm b (Mat v) = liftGL $ js_uniformMatrix3fv ufm b v
 
 uniformMatrix4fv :: (MonadGL m) => WebGLUniformLocation -> Bool -> Mat 4 t Float -> m ()
-uniformMatrix4fv ufm b (Mat v) = do
-    cxt <- getContext
-    liftIO $ js_uniformMatrix4fv cxt ufm b v
-
-
-
+uniformMatrix4fv ufm b (Mat v) = liftGL $ js_uniformMatrix4fv ufm b v
 
 {-
 
