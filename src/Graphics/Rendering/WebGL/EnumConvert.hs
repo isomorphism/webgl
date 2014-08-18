@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Graphics.Rendering.WebGL.EnumConvert where
 
 import Data.Bits
@@ -20,7 +21,7 @@ instance GLEnum TextureUnit where
         | e > gl_TEXTURE31       = Nothing
         | otherwise              = Just $ TextureUnit (e - gl_TEXTURE0)
 
-data TextureTarget = Texture2D
+data TextureTarget = TextureTarget2D
                    | TextureCubePosX
                    | TextureCubeNegX
                    | TextureCubePosY
@@ -30,7 +31,7 @@ data TextureTarget = Texture2D
   deriving (Eq, Ord, Read, Show)
 
 instance GLEnum TextureTarget where
-    toGLEnum Texture2D = gl_TEXTURE_2D
+    toGLEnum TextureTarget2D = gl_TEXTURE_2D
     toGLEnum TextureCubePosX = gl_TEXTURE_CUBE_MAP_POSITIVE_X
     toGLEnum TextureCubeNegX = gl_TEXTURE_CUBE_MAP_NEGATIVE_X
     toGLEnum TextureCubePosY = gl_TEXTURE_CUBE_MAP_POSITIVE_Y
@@ -38,6 +39,7 @@ instance GLEnum TextureTarget where
     toGLEnum TextureCubePosZ = gl_TEXTURE_CUBE_MAP_POSITIVE_Z
     toGLEnum TextureCubeNegZ = gl_TEXTURE_CUBE_MAP_NEGATIVE_Z
     fromGLEnum e
+        | e == gl_TEXTURE_2D                  = Just TextureTarget2D
         | e == gl_TEXTURE_CUBE_MAP_POSITIVE_X = Just TextureCubePosX
         | e == gl_TEXTURE_CUBE_MAP_NEGATIVE_X = Just TextureCubeNegX 
         | e == gl_TEXTURE_CUBE_MAP_POSITIVE_Y = Just TextureCubePosY
@@ -57,15 +59,15 @@ instance GLEnum BufferTarget where
         | e == gl_ELEMENT_ARRAY_BUFFER = Just ElementArrayBuffer
         | otherwise                    = Nothing
 
-data TextureType = TextureType2D | TextureTypeCube
+data TextureType = Texture2D | TextureCube
   deriving (Eq, Ord, Read, Show)
 
 instance GLEnum TextureType where
-    toGLEnum TextureType2D = gl_TEXTURE_2D
-    toGLEnum TextureTypeCube = gl_TEXTURE_CUBE_MAP
+    toGLEnum Texture2D = gl_TEXTURE_2D
+    toGLEnum TextureCube = gl_TEXTURE_CUBE_MAP
     fromGLEnum e
-        | e == gl_TEXTURE_2D       = Just TextureType2D
-        | e == gl_TEXTURE_CUBE_MAP = Just TextureTypeCube
+        | e == gl_TEXTURE_2D       = Just Texture2D
+        | e == gl_TEXTURE_CUBE_MAP = Just TextureCube
         | otherwise                = Nothing
 
 
@@ -181,11 +183,120 @@ instance GLEnum PixelStoreParam where
         | e == gl_UNPACK_ALIGNMENT = Just UnpackAlignment
         | otherwise                = Nothing
 
+data CullFaceMode = CullFront | CullBack | CullBoth
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum CullFaceMode where
+    toGLEnum CullFront = gl_FRONT
+    toGLEnum CullBack  = gl_BACK
+    toGLEnum CullBoth  = gl_FRONT_AND_BACK
+    fromGLEnum e
+        | e == gl_FRONT           = Just CullFront
+        | e == gl_BACK            = Just CullBack
+        | e == gl_FRONT_AND_BACK  = Just CullBoth
+        | otherwise               = Nothing
+
+data IndexElementType = ByteIndices | ShortIndices
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum IndexElementType where
+    toGLEnum ByteIndices = gl_UNSIGNED_BYTE
+    toGLEnum ShortIndices  = gl_UNSIGNED_SHORT
+    fromGLEnum e
+        | e == gl_UNSIGNED_BYTE  = Just ByteIndices
+        | e == gl_UNSIGNED_SHORT = Just ShortIndices
+        | otherwise              = Nothing
+
+data DrawMode = DrawPoints | DrawLines | DrawLineLoop | DrawLineStrip 
+              | DrawTriangles | DrawTriangleStrip | DrawTriangleFan
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum DrawMode where
+    toGLEnum DrawPoints = gl_POINTS
+    toGLEnum DrawLines = gl_LINES
+    toGLEnum DrawLineLoop = gl_LINE_LOOP
+    toGLEnum DrawLineStrip = gl_LINE_STRIP
+    toGLEnum DrawTriangles = gl_TRIANGLES
+    toGLEnum DrawTriangleStrip = gl_TRIANGLE_STRIP
+    toGLEnum DrawTriangleFan = gl_TRIANGLE_FAN
+    fromGLEnum e
+        | e == gl_POINTS         = Just DrawPoints
+        | e == gl_LINES          = Just DrawLines
+        | e == gl_LINE_LOOP      = Just DrawLineLoop
+        | e == gl_LINE_STRIP     = Just DrawLineStrip
+        | e == gl_TRIANGLES      = Just DrawTriangles
+        | e == gl_TRIANGLE_STRIP = Just DrawTriangleStrip
+        | e == gl_TRIANGLE_FAN   = Just DrawTriangleFan
+        | otherwise              = Nothing
+
+data GLDataType = GLByte | GLUByte | GLShort | GLUShort | GLFloat
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum GLDataType where
+    toGLEnum GLByte = gl_BYTE
+    toGLEnum GLUByte = gl_UNSIGNED_BYTE
+    toGLEnum GLShort = gl_SHORT
+    toGLEnum GLUShort = gl_UNSIGNED_SHORT
+    toGLEnum GLFloat = gl_FLOAT
+    fromGLEnum e
+        | e == gl_BYTE           = Just GLByte
+        | e == gl_UNSIGNED_BYTE  = Just GLUByte
+        | e == gl_SHORT          = Just GLShort
+        | e == gl_UNSIGNED_SHORT = Just GLUShort
+        | e == gl_FLOAT          = Just GLFloat
+        | otherwise              = Nothing
+
+data TextureWrap = ClampToEdge | Repeat | MirroredRepeat
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum TextureWrap where
+    toGLEnum ClampToEdge    = gl_CLAMP_TO_EDGE
+    toGLEnum Repeat         = gl_REPEAT
+    toGLEnum MirroredRepeat = gl_MIRRORED_REPEAT
+    fromGLEnum e
+        | e == gl_CLAMP_TO_EDGE   = Just ClampToEdge
+        | e == gl_REPEAT          = Just Repeat
+        | e == gl_MIRRORED_REPEAT = Just MirroredRepeat
+        | otherwise               = Nothing
+
+data TexCoordAxis = SAxis | TAxis
+  deriving (Eq, Ord, Read, Show)
+
+getWrapParamEnum SAxis = gl_TEXTURE_WRAP_S
+getWrapParamEnum TAxis = gl_TEXTURE_WRAP_T
 
 
+data TexFilterMode = Nearest | Linear
+    deriving (Eq, Ord, Read, Show)
 
+type TexMagFilter = TexFilterMode
 
+instance GLEnum TexMagFilter where
+    toGLEnum Nearest = gl_NEAREST
+    toGLEnum Linear = gl_LINEAR
+    fromGLEnum e
+        | e == gl_NEAREST                = Just Nearest
+        | e == gl_LINEAR                 = Just Linear
+        | otherwise                      = Nothing
 
+data TexMinFilter = TexMinFilter TexFilterMode (Maybe TexFilterMode)
+    deriving (Eq, Ord, Read, Show)
+
+instance GLEnum TexMinFilter where
+    toGLEnum (TexMinFilter Nearest Nothing) = gl_NEAREST
+    toGLEnum (TexMinFilter Linear Nothing) = gl_LINEAR
+    toGLEnum (TexMinFilter Nearest (Just Nearest)) = gl_NEAREST_MIPMAP_NEAREST
+    toGLEnum (TexMinFilter Nearest (Just Linear)) = gl_NEAREST_MIPMAP_LINEAR
+    toGLEnum (TexMinFilter Linear (Just Nearest)) = gl_LINEAR_MIPMAP_NEAREST
+    toGLEnum (TexMinFilter Linear (Just Linear)) = gl_LINEAR_MIPMAP_LINEAR
+    fromGLEnum e
+        | e == gl_NEAREST                = Just (TexMinFilter Nearest Nothing)
+        | e == gl_LINEAR                 = Just (TexMinFilter Linear Nothing)
+        | e == gl_NEAREST_MIPMAP_NEAREST = Just (TexMinFilter Nearest (Just Nearest))
+        | e == gl_NEAREST_MIPMAP_LINEAR  = Just (TexMinFilter Nearest (Just Linear))
+        | e == gl_LINEAR_MIPMAP_NEAREST  = Just (TexMinFilter Linear (Just Nearest))
+        | e == gl_LINEAR_MIPMAP_LINEAR   = Just (TexMinFilter Linear (Just Linear))
+        | otherwise                      = Nothing
 
 
 

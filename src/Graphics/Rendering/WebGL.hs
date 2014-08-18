@@ -29,8 +29,15 @@ import Graphics.Rendering.WebGL.EnumConvert
 import Graphics.Rendering.WebGL.Raw
 import Graphics.Rendering.WebGL.Misc
 import Graphics.Rendering.WebGL.Internal
+import Graphics.Rendering.WebGL.Constants
 
 import GHCJS.DOM.HTMLCanvasElement
+
+
+cullFace :: (MonadGL m) => CullFaceMode -> m ()
+cullFace mode = liftGL $ js_cullFace (toGLEnum mode)
+
+
 
 bindBuffer :: (MonadGL m) => BufferTarget -> WebGLBuffer -> m ()
 bindBuffer t buf = liftGL $ js_bindBuffer (toGLEnum t) buf
@@ -38,11 +45,26 @@ bindBuffer t buf = liftGL $ js_bindBuffer (toGLEnum t) buf
 bufferData :: (MonadGL m) => BufferTarget -> TypedArray a -> BufferUsage -> m ()
 bufferData t buf use = liftGL $ js_bufferData (toGLEnum t) buf (toGLEnum use)
 
+createBuffer :: (MonadGL m) => m WebGLBuffer
+createBuffer = liftGL js_createBuffer
+
+drawElements :: (MonadGL m) => DrawMode -> Int32 -> IndexElementType -> Int -> m ()
+drawElements mode cnt ixtype offset = liftGL $ js_drawElements (toGLEnum mode) cnt (toGLEnum ixtype) offset
+
+vertexAttribPointer :: (MonadGL m) => Word32 -> Int32 -> GLDataType -> Bool -> Int32 -> Int -> m ()
+vertexAttribPointer ix sz ty normd stride offs = liftGL $ js_vertexAttribPointer ix sz (toGLEnum ty) normd stride offs
 
 
+
+
+activeTexture :: (MonadGL m) => TextureUnit -> m ()
+activeTexture tu = liftGL $ js_activeTexture (toGLEnum tu)
 
 bindTexture :: (MonadGL m) => TextureType -> WebGLTexture -> m ()
 bindTexture t tx = liftGL $ js_bindTexture (toGLEnum t) tx
+
+unbindTexture :: (MonadGL m) => TextureType -> m ()
+unbindTexture t = liftGL $ js_unbindTexture (toGLEnum t)
 
 createTexture :: (MonadGL m) => m WebGLTexture
 createTexture = liftGL js_createTexture
@@ -55,10 +77,18 @@ pixelStoreParam param val = liftGL $ js_pixelStorei (toGLEnum param) val
 
 texImage2D :: (MonadGL m) => TextureTarget -> Int32 -> PixelTypeFormat -> Image -> m ()
 texImage2D targ lev tyfm tex = liftGL $ js_texImage2D (toGLEnum targ) lev 
-                                                      (getFormatEnum tyfm) 
-                                                      (getFormatEnum tyfm) 
-                                                      (getTypeEnum tyfm)
-                                                      tex
+                                                      (getFormatEnum tyfm) (getFormatEnum tyfm) 
+                                                      (getTypeEnum tyfm) tex
+
+texWrap :: (MonadGL m) => TextureType -> TexCoordAxis -> TextureWrap -> m ()
+texWrap ty ax mode = liftGL $ js_texParameteri (toGLEnum ty) (getWrapParamEnum ax) (toGLEnum mode)
+
+texMinFilter :: (MonadGL m) => TextureType -> TexMinFilter -> m ()
+texMinFilter ty mode = liftGL $ js_texParameteri (toGLEnum ty) gl_TEXTURE_MIN_FILTER (toGLEnum mode)
+
+texMagFilter :: (MonadGL m) => TextureType -> TexMagFilter -> m ()
+texMagFilter ty mode = liftGL $ js_texParameteri (toGLEnum ty) gl_TEXTURE_MAG_FILTER (toGLEnum mode)
+
 
 setClearColor :: (MonadGL m) => Tint -> m ()
 setClearColor (Tint (Vec v)) = liftGL $ js_clearColor v

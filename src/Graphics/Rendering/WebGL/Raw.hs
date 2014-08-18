@@ -465,10 +465,11 @@ foreign import javascript unsafe "$4['texParameterf']($1, $2, $3);"
 
 -- | void texParameteri(GLenum target, GLenum pname, GLint param);
 foreign import javascript unsafe "$4['texParameteri']($1, $2, $3);"
-    js_texParameteri :: GLenum -> GLenum -> GLint -> WebGLContext -> IO ()
+    --  js_texParameteri :: GLenum -> GLenum -> GLint -> WebGLContext -> IO ()
+    js_texParameteri :: GLenum -> GLenum -> GLenum -> WebGLContext -> IO ()
 
-foreign import javascript unsafe "$4['texParameteri']($1, $2, $3);"
-    js_texParameteri_enum :: GLenum -> GLenum -> GLenum -> WebGLContext -> IO ()
+--  foreign import javascript unsafe "$4['texParameteri']($1, $2, $3);"
+    --  js_texParameteri_enum :: GLenum -> GLenum -> GLenum -> WebGLContext -> IO ()
 
 -- | void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels);
 -- | void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, ImageData? pixels);
