@@ -44,12 +44,12 @@ foreign import javascript unsafe "$3['bindBuffer']($1, $2);"
     js_bindBuffer :: GLenum -> WebGLBuffer -> WebGLContext -> IO ()
 
 -- | void bindFramebuffer(GLenum target, WebGLFramebuffer? framebuffer);
-foreign import javascript unsafe "$3['bindFrameBuffer']($1, $2);"
-    js_bindFrameBuffer :: GLenum -> WebGLFrameBuffer -> WebGLContext -> IO ()
+foreign import javascript unsafe "$3['bindFramebuffer']($1, $2);"
+    js_bindFramebuffer :: GLenum -> WebGLFramebuffer -> WebGLContext -> IO ()
 
 -- | void bindRenderbuffer(GLenum target, WebGLRenderbuffer? renderbuffer);
-foreign import javascript unsafe "$3['bindRenderBuffer']($1, $2);"
-    js_bindRenderBuffer :: GLenum -> WebGLRenderBuffer -> WebGLContext -> IO ()
+foreign import javascript unsafe "$3['bindRenderbuffer']($1, $2);"
+    js_bindRenderbuffer :: GLenum -> WebGLRenderbuffer -> WebGLContext -> IO ()
 
 -- | void bindTexture(GLenum target, WebGLTexture? texture);
 foreign import javascript unsafe "$3['bindTexture']($1, $2);"
@@ -60,8 +60,8 @@ foreign import javascript unsafe "$2['bindTexture']($1, null);"
     js_unbindTexture :: GLenum -> WebGLContext -> IO ()
 
 -- | void blendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-foreign import javascript unsafe "$5['blendColor']($1, $2, $3, $4);"
-    js_blendColor :: GLfloat -> GLfloat -> GLfloat -> GLfloat -> WebGLContext -> IO ()
+foreign import javascript unsafe "$2['blendColor']($1[0], $1[1], $1[2], $1[3]);"
+    js_blendColor :: TypedArray Float -> WebGLContext -> IO ()
 
 -- | void blendEquation(GLenum mode);
 foreign import javascript unsafe "$2['blendEquation']($1);"
@@ -145,16 +145,16 @@ foreign import javascript unsafe "$1['createBuffer']()"
     js_createBuffer :: WebGLContext -> IO WebGLBuffer
 
 -- | WebGLFramebuffer? createFramebuffer();
-foreign import javascript unsafe "$1['createFrameBuffer']()"
-    js_createFrameBuffer :: WebGLContext -> IO WebGLFrameBuffer
+foreign import javascript unsafe "$1['createFramebuffer']()"
+    js_createFramebuffer :: WebGLContext -> IO WebGLFramebuffer
 
 -- | WebGLProgram? createProgram();
 foreign import javascript unsafe "$1['createProgram']()"
     js_createProgram :: WebGLContext -> IO WebGLProgram
 
 -- | WebGLRenderbuffer? createRenderbuffer();
-foreign import javascript unsafe "$1['createRenderBuffer']()"
-    js_createRenderBuffer :: WebGLContext -> IO WebGLRenderBuffer
+foreign import javascript unsafe "$1['createRenderbuffer']()"
+    js_createRenderbuffer :: WebGLContext -> IO WebGLRenderbuffer
 
 -- | WebGLShader? createShader(GLenum type);
 foreign import javascript unsafe "$2['createShader']($1)"
@@ -173,16 +173,16 @@ foreign import javascript unsafe "$2['deleteBuffer']($1)"
     js_deleteBuffer :: WebGLBuffer -> WebGLContext -> IO ()
 
 -- | void deleteFramebuffer(WebGLFramebuffer? framebuffer);
-foreign import javascript unsafe "$2['deleteFrameBuffer']($1)"
-    js_deleteFrameBuffer :: WebGLFrameBuffer -> WebGLContext -> IO ()
+foreign import javascript unsafe "$2['deleteFramebuffer']($1)"
+    js_deleteFramebuffer :: WebGLFramebuffer -> WebGLContext -> IO ()
 
 -- | void deleteProgram(WebGLProgram? program);
 foreign import javascript unsafe "$2['deleteProgram']($1)"
     js_deleteProgram :: WebGLProgram -> WebGLContext -> IO ()
 
 -- | void deleteRenderbuffer(WebGLRenderbuffer? renderbuffer);
-foreign import javascript unsafe "$2['deleteRenderBuffer']($1)"
-    js_deleteRenderBuffer :: WebGLRenderBuffer -> WebGLContext -> IO ()
+foreign import javascript unsafe "$2['deleteRenderbuffer']($1)"
+    js_deleteRenderbuffer :: WebGLRenderbuffer -> WebGLContext -> IO ()
 
 -- | void deleteShader(WebGLShader? shader);
 foreign import javascript unsafe "$2['deleteShader']($1)"
@@ -242,7 +242,7 @@ foreign import javascript unsafe "$1['flush']();"
 
 -- | void framebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, WebGLRenderbuffer? renderbuffer);
 foreign import javascript unsafe "$5['framebufferRenderbuffer']($1, $2, $3, $4);"
-    js_framebufferRenderbuffer :: GLenum -> GLenum -> GLenum -> WebGLRenderBuffer -> WebGLContext -> IO ()
+    js_framebufferRenderbuffer :: GLenum -> GLenum -> GLenum -> WebGLRenderbuffer -> WebGLContext -> IO ()
 
 -- | void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, WebGLTexture? texture, GLint level);
 foreign import javascript unsafe "$6['framebufferTexture2D']($1, $2, $3, $4, $5);"
@@ -295,8 +295,8 @@ foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_Int32A
 foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_Float32Array :: GLenum -> WebGLContext -> IO (TypedArray Float)
 
 foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_buffer :: GLenum -> WebGLContext -> IO WebGLBuffer
-foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_framebuffer :: GLenum -> WebGLContext -> IO WebGLFrameBuffer
-foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_renderbuffer :: GLenum -> WebGLContext -> IO WebGLRenderBuffer
+foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_framebuffer :: GLenum -> WebGLContext -> IO WebGLFramebuffer
+foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_renderbuffer :: GLenum -> WebGLContext -> IO WebGLRenderbuffer
 foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_program :: GLenum -> WebGLContext -> IO WebGLProgram
 foreign import javascript unsafe "$2['getParameter']($1)" js_getParameter_texture :: GLenum -> WebGLContext -> IO WebGLTexture
 
@@ -403,18 +403,32 @@ foreign import javascript unsafe "$3['hint']($1, $2);"
     js_hint :: GLenum -> GLenum -> WebGLContext -> IO ()
 
 -- | [WebGLHandlesContextLoss] GLboolean isBuffer(WebGLBuffer? buffer);
+foreign import javascript unsafe "$2['isBuffer']($1)"
+    js_isBuffer :: WebGLBuffer -> WebGLContext -> IO Bool
 
 -- | [WebGLHandlesContextLoss] GLboolean isEnabled(GLenum cap);
+foreign import javascript unsafe "$2['isEnabled']($1)"
+    js_isEnabled :: GLenum -> WebGLContext -> IO Bool
 
 -- | [WebGLHandlesContextLoss] GLboolean isFramebuffer(WebGLFramebuffer? framebuffer);
+foreign import javascript unsafe "$2['isFramebuffer']($1)"
+    js_isFramebuffer :: WebGLFramebuffer -> WebGLContext -> IO Bool
 
 -- | [WebGLHandlesContextLoss] GLboolean isProgram(WebGLProgram? program);
+foreign import javascript unsafe "$2['isProgram']($1)"
+    js_isProgram :: WebGLProgram -> WebGLContext -> IO Bool
 
 -- | [WebGLHandlesContextLoss] GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer);
+foreign import javascript unsafe "$2['isRenderbuffer']($1)"
+    js_isRenderbuffer :: WebGLRenderbuffer -> WebGLContext -> IO Bool
 
 -- | [WebGLHandlesContextLoss] GLboolean isShader(WebGLShader? shader);
+foreign import javascript unsafe "$2['isShader']($1)"
+    js_isShader :: WebGLShader t -> WebGLContext -> IO Bool
 
 -- | [WebGLHandlesContextLoss] GLboolean isTexture(WebGLTexture? texture);
+foreign import javascript unsafe "$2['isTexture']($1)"
+    js_isTexture :: WebGLTexture -> WebGLContext -> IO Bool
 
 -- | void lineWidth(GLfloat width);
 foreign import javascript unsafe "$2['lineWidth']($1);"
@@ -440,7 +454,7 @@ foreign import javascript unsafe "$3['polygonOffset']($1, $2);"
 -- | void renderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
 -- | void sampleCoverage(GLclampf value, GLboolean invert);
 -- | void scissor(GLint x, GLint y, GLsizei width, GLsizei height);
-foreign import javascript unsafe "$3['scissor']($1, $2);"
+foreign import javascript unsafe "$5['scissor']($1, $2, $3, $4);"
     js_scissor :: GLint -> GLint -> GLsizei -> GLsizei -> WebGLContext -> IO ()
 
 -- | void shaderSource(WebGLShader? shader, DOMString source);

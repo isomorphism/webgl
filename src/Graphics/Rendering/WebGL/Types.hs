@@ -21,6 +21,14 @@ class (MonadIO m, Monad m) => MonadGL m where
     getContext :: m WebGLContext
 
 
+class GLObject a where
+    create :: (MonadGL m) => m a
+    delete :: (MonadGL m) => a -> m ()
+    isValid :: (MonadGL m) => a -> m Bool
+
+class Uniform a where 
+    uniform :: (MonadGL m) => WebGLUniformLocation -> a -> m ()
+
 
 -- translating from Web IDL specification:
 -- byte = 8 bits
@@ -106,11 +114,11 @@ type WebGLUniformValue = JSRef WebGLUniformValue'
 data WebGLBuffer'
 type WebGLBuffer = JSRef WebGLBuffer'
 
-data WebGLRenderBuffer'
-type WebGLRenderBuffer = JSRef WebGLRenderBuffer'
+data WebGLRenderbuffer'
+type WebGLRenderbuffer = JSRef WebGLRenderbuffer'
 
-data WebGLFrameBuffer'
-type WebGLFrameBuffer = JSRef WebGLFrameBuffer'
+data WebGLFramebuffer'
+type WebGLFramebuffer = JSRef WebGLFramebuffer'
 
 
 data WebGLTexture'
