@@ -38,28 +38,6 @@ data TextureType (t :: TextureTargetType) where
     TextureCubePosZ :: TextureType TargetImage
     TextureCubeNegZ :: TextureType TargetImage
 
-
---  data TextureTarget = TextureTarget2D
-                   --  | TextureCubePosX
-                   --  | TextureCubeNegX
-                   --  | TextureCubePosY
-                   --  | TextureCubeNegY
-                   --  | TextureCubePosZ
-                   --  | TextureCubeNegZ
-  --  deriving (Eq, Ord, Read, Show)
-
---  data TextureType = Texture2D | TextureCube
-  --  deriving (Eq, Ord, Read, Show)
-
---  instance GLEnum TextureType where
-    --  toGLEnum Texture2D = gl_TEXTURE_2D
-    --  toGLEnum TextureCube = gl_TEXTURE_CUBE_MAP
-    --  fromGLEnum e
-        --  | e == gl_TEXTURE_2D       = Just Texture2D
-        --  | e == gl_TEXTURE_CUBE_MAP = Just TextureCube
-        --  | otherwise                = Nothing
-
-
 instance ToGLEnum (TextureType t) where
     toGLEnum Texture2D       = gl_TEXTURE_2D
     toGLEnum TextureCube     = gl_TEXTURE_CUBE_MAP
@@ -69,15 +47,6 @@ instance ToGLEnum (TextureType t) where
     toGLEnum TextureCubeNegY = gl_TEXTURE_CUBE_MAP_NEGATIVE_Y
     toGLEnum TextureCubePosZ = gl_TEXTURE_CUBE_MAP_POSITIVE_Z
     toGLEnum TextureCubeNegZ = gl_TEXTURE_CUBE_MAP_NEGATIVE_Z
-    --  fromGLEnum e
-        --  | e == gl_TEXTURE_2D                  = Just TextureTarget2D
-        --  | e == gl_TEXTURE_CUBE_MAP_POSITIVE_X = Just TextureCubePosX
-        --  | e == gl_TEXTURE_CUBE_MAP_NEGATIVE_X = Just TextureCubeNegX 
-        --  | e == gl_TEXTURE_CUBE_MAP_POSITIVE_Y = Just TextureCubePosY
-        --  | e == gl_TEXTURE_CUBE_MAP_NEGATIVE_Y = Just TextureCubeNegY
-        --  | e == gl_TEXTURE_CUBE_MAP_POSITIVE_Z = Just TextureCubePosZ
-        --  | e == gl_TEXTURE_CUBE_MAP_NEGATIVE_Z = Just TextureCubeNegZ
-        --  | otherwise                           = Nothing
 
 data BufferTarget = ArrayBuffer | ElementArrayBuffer
   deriving (Eq, Ord, Read, Show)
@@ -493,13 +462,6 @@ instance FromGLEnum FramebufferStatus where
         | e == gl_FRAMEBUFFER_INCOMPLETE_DIMENSIONS         = Just FramebufferIncompleteDimensions
         | e == gl_FRAMEBUFFER_UNSUPPORTED                   = Just FramebufferUnsupported
         | otherwise                                         = Nothing
-
-
-
-
-
-
-
 
 
 

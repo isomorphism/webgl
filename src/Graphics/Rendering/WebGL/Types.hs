@@ -13,9 +13,9 @@ import GHCJS.TypedArray
 import Graphics.Rendering.WebGL.Matrix
 
 
-newtype Color = Color { getColor :: Vec 3 Imm Float } -- 3 elements (rgb), 0.0 - 1.0 range
+newtype Color = Color { getColor :: Vec 3 Imm Float }
 
-newtype Tint = Tint { getTint :: Vec 4 Imm Float } -- 4 elements (rgba), 0.0 - 1.0 range
+newtype Tint = Tint { getTint :: Vec 4 Imm Float }
 
 class (MonadIO m, Monad m) => MonadGL m where
     getContext :: m WebGLContext
